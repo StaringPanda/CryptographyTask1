@@ -11,7 +11,9 @@ import java.util.regex.Pattern;
 
 public class CryptographyTask1{
 
-    //only works with ascii files, when £ or € are used, the file becomes unreadible
+    // only works with ascii files, when £ or € are used, the file becomes unreadible
+    // other than this the modulo operations will be carried out on lines containing two numbers and ignore most other characters
+    // the catch errors are not needed with most other characters considered
     public static void main(String[] args){
         Scanner keyboard = new Scanner(System.in);
         System.out.println("Performs modulo on numbers in a text file, each line may contain two numbers only, "
@@ -25,17 +27,17 @@ public class CryptographyTask1{
             while (myFile.hasNextLine()){
                 lineCount++;
                 String line = myFile.nextLine();
-                String[] data = line.split("\\s+");
-                Pattern p = Pattern.compile("[a-zA-Z,.!?@#^&%£€_'~¬`\\=|+*/()<>{}]");
-                Matcher m = p.matcher(line);
-                    if (line.trim().length() == 0)continue;
-                    if (m.find())continue;
-                    if (data.length != 2)continue;
+                String[] data = line.split("\\s+");// ignores multiple whitespaces and will perform modulo so long as there are two numbers
+                Pattern p = Pattern.compile("[a-zA-Z,.!?@#^&%£€_'~¬`\\=|+*/()<>{}]"); // uses regular expressions to ignore letters and special characters
+                Matcher m = p.matcher(line); // finds illegal characters on the lines
+                    if (line.trim().length() == 0)continue; // skips empty lines
+                    if (m.find())continue; // skips lines that have illegal characters entered
+                    if (data.length != 2)continue; // skips lines that do not have two values entered
                     if (data.length == 2){
                         try{
-                            long a = Long.parseLong(data[0]);
+                            long a = Long.parseLong(data[0]); // changed int to long to deal with larger numbers
                             long b = Long.parseLong(data[1]);
-                            System.out.println(getModulo(a, b));
+                            System.out.println(getModulo(a, b)); //prints method result along with the numbers that modulo was performed on
 
                         }catch(NumberFormatException e){
                             System.out.println("An exception occurred while parsing numbers from line " + lineCount + " : " + line);
@@ -49,11 +51,11 @@ public class CryptographyTask1{
             }
         }
     public static long getModulo(long a, long b){ 
-        long remainder1 = a - ((a / b)* b);
-        //remainder1 = Math.abs(remainder1);
-        remainder1 = (remainder1 < 0 ? -remainder1 : remainder1);
+        long remainder = a - ((a / b)* b); // finds the remainder of the two given numbers by performing the mathematical operation
+        //remainder = Math.abs(remainder1);
+        remainder = (remainder < 0 ? -remainder : remainder);// gets the absolute value of a number changing negative numbers to positive
         System.out.print(a + " mod " + b + " = ");
-        return remainder1;
+        return remainder;
     }
 //    public static boolean skipText(String[] data){
 //        for (int i = 0; i < data.length; i++){
